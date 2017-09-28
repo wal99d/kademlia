@@ -13,7 +13,7 @@ type Node struct {
 	right  *Node
 }
 
-func (n *Node) Insert(p *Peer) error {
+func (n *Node) insert(p *Peer) error {
 	if n == nil {
 		return errors.New("Cannot insert bucket into empty Tree!!")
 	}
@@ -30,7 +30,7 @@ func (n *Node) Insert(p *Peer) error {
 			}
 			return nil
 		}
-		return n.right.Insert(p)
+		return n.right.insert(p)
 	case p.id.Xor(n.peer.id).Prefixlen() < n.prefix:
 		if n.left == nil {
 			n.left = &Node{
@@ -40,7 +40,7 @@ func (n *Node) Insert(p *Peer) error {
 			}
 			return nil
 		}
-		return n.left.Insert(p)
+		return n.left.insert(p)
 	}
 	return nil
 }
@@ -52,7 +52,7 @@ type Tree struct {
 func NewTree() *Tree {
 	return &Tree{}
 }
-
+//Insert will add new peer to its bucket index by its prefix 
 func (t *Tree) Insert(p *Peer) error {
 	if t.Root == nil {
 		t.Root = &Node{
@@ -61,9 +61,9 @@ func (t *Tree) Insert(p *Peer) error {
 		}
 		return nil
 	}
-	return t.Root.Insert(p)
+	return t.Root.insert(p)
 }
-
+//Traverse will traverse the tree from root till leaf 
 func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	if n == nil {
 		return
@@ -76,7 +76,7 @@ func (t *Tree) Traverse(n *Node, f func(*Node)) {
 // func (t Tree) String() string {
 // 	return fmt.Sprintf("Tree root:%v\n", t.Root.peer.id)
 // }
-
+//ShowTree will print an orgnized tree structure as string good for debugging purposes
 func (t Tree) ShowTree() {
 	t.Traverse(t.Root, func(n *Node) { fmt.Print(n.peer.id, ": ", n.peer.address, ":", n.prefix, " | \n") })
 }
