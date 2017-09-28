@@ -52,7 +52,8 @@ type Tree struct {
 func NewTree() *Tree {
 	return &Tree{}
 }
-//Insert will add new peer to its bucket index by its prefix 
+
+//Insert will add new peer to its bucket index by its prefix
 func (t *Tree) Insert(p *Peer) error {
 	if t.Root == nil {
 		t.Root = &Node{
@@ -63,7 +64,8 @@ func (t *Tree) Insert(p *Peer) error {
 	}
 	return t.Root.insert(p)
 }
-//Traverse will traverse the tree from root till leaf 
+
+//Traverse will traverse the tree from root till leaf
 func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	if n == nil {
 		return
@@ -73,9 +75,6 @@ func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	t.Traverse(n.right, f)
 }
 
-// func (t Tree) String() string {
-// 	return fmt.Sprintf("Tree root:%v\n", t.Root.peer.id)
-// }
 //ShowTree will print an orgnized tree structure as string good for debugging purposes
 func (t Tree) ShowTree() {
 	t.Traverse(t.Root, func(n *Node) { fmt.Print(n.peer.id, ": ", n.peer.address, ":", n.prefix, " | \n") })
