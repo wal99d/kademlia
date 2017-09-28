@@ -75,6 +75,9 @@ func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	t.Traverse(n.right, f)
 }
 
+// func (t Tree) String() string {
+// 	return fmt.Sprintf("Tree root:%v\n", t.Root.peer.id)
+// }
 //ShowTree will print an orgnized tree structure as string good for debugging purposes
 func (t Tree) ShowTree() {
 	t.Traverse(t.Root, func(n *Node) { fmt.Print(n.peer.id, ": ", n.peer.address, ":", n.prefix, " | \n") })
