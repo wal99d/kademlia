@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+
+service Kademlia{
+	rpc Ping(Request) returns(Response){}
+	rpc FindNode(Target) returns (Nodes){}
+}
+
+message Request{
+	Contact contact =1;
+    string networkId = 3;
+}
+
+message Response{
+    Contact contact =1;
+}
+
+message Contact{
+    bytes id = 1;
+    string address = 2;
+}
+
+message Target{
+	bytes id = 1;
+}
+
+message Nodes{
+    repeated Contact contact =1;
+}
