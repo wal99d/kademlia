@@ -22,6 +22,7 @@ func main() {
 	t.Insert(p4)
 	t.ShowTree()
 
+	fmt.Printf("Buckets: %s\n", t)
 	/*
 		ctx := context.Background()
 		c := kademlia.NewCotact(kademlia.NewRandomNodeID(), "home")
