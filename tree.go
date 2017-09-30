@@ -7,6 +7,7 @@ import (
 
 type Node struct {
 	bucket Bucket
+	prefix int
 	peer   *Peer
 	left   *Node
 	right  *Node
@@ -18,11 +19,14 @@ func (n *Node) insert(p *Peer) error {
 	}
 	bucketIndex := p.id.Xor(n.peer.id).Prefixlen()
 	switch {
-	case bucketIndex >= n.peer.id.Xor(p.id).Prefixlen():
+	case bucketIndex >= n.prefix:
 		if n.right == nil {
 			n.right = &Node{
 				bucket: NewBucket(),
 				peer:   p,
+				prefix: bucketIndex,
+				left:   nil,
+				right:  nil,
 			}
 			n.bucket.InsertInBucket(p, bucketIndex)
 			return nil
@@ -30,11 +34,14 @@ func (n *Node) insert(p *Peer) error {
 		n.bucket.InsertInBucket(p, bucketIndex)
 		return n.right.insert(p)
 
-	case bucketIndex < n.peer.id.Xor(p.id).Prefixlen():
+	case bucketIndex < n.prefix:
 		if n.left == nil {
 			n.left = &Node{
 				bucket: NewBucket(),
 				peer:   p,
+				prefix: bucketIndex,
+				left:   nil,
+				right:  nil,
 			}
 			n.bucket.InsertInBucket(p, bucketIndex)
 			return nil
@@ -59,6 +66,8 @@ func (t *Tree) Insert(p *Peer) error {
 		t.Root = &Node{
 			bucket: NewBucket(),
 			peer:   p,
+			left:   nil,
+			right:  nil,
 		}
 		return nil
 	}
@@ -75,10 +84,13 @@ func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	t.Traverse(n.right, f)
 }
 
-// func (t Tree) String() string {
-// 	return fmt.Sprintf("Tree root:%v\n", t.Root.peer.id)
-// }
 //ShowTree will print an orgnized tree structure as string good for debugging purposes
 func (t Tree) ShowTree() {
-	t.Traverse(t.Root, func(n *Node) { fmt.Print(n.peer.id, ": ", n.peer.address, ":", "| \n") })
+	t.Traverse(t.Root, func(n *Node) {
+		for _, v := range n.bucket.peerList {
+			for e := v.Front(); e != nil; e = e.Next() {
+				fmt.Print(n.peer.id, ": ", n.peer.address, ":", e.Value.(*Peer).id, "| \n")
+			}
+		}
+	})
 }
