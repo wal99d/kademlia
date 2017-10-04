@@ -67,3 +67,7 @@ func (h *hashTree) compressHashTree(p *Peer, old *Peer, i int) error {
 	}
 	return nil
 }
+
+func (h *hashTree) traverse(id ID, i int, peers []*Peer, filter bool) []*Peer {
+	//TODO: Implement it
+}
